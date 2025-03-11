@@ -6,6 +6,7 @@ import TaskList from "./components/TaskList";
 
 function App() {
   const [searchTerm, setSearchTerm] = useState("");
+
   return (
     <>
       <div className="flex h-screen bg-gray-900 text-white">

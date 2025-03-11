@@ -1,34 +1,32 @@
 import React from "react";
 
 const TaskCard = ({ tasks, category, onSort, sortOrder, onDelete, onEdit }) => {
-  // Sorting the tasks based on the sort order passed
+  // Determine background color based on the category
+  const categoryColors = {
+    todo: "bg-indigo-600",
+    done: "bg-yellow-500",
+    revised: "bg-teal-500",
+    "on-progress": "bg-rose-500",
+  };
 
+  const bgColor = categoryColors[category] || "bg-gray-500"; // Default color if category is missing
+
+  // Sort tasks based on date and order
   const sortedTasks = [...tasks].sort((a, b) =>
     sortOrder
       ? new Date(a.date) - new Date(b.date)
       : new Date(b.date) - new Date(a.date),
   );
 
-  let bgColor;
-
-  if (tasks.some((selected) => selected.category === "todo")) {
-    bgColor = "bg-indigo-600";
-  } else if (tasks.some((selected) => selected.category === "done")) {
-    bgColor = "bg-yellow-500";
-  } else if (tasks.some((selected) => selected.category === "revised")) {
-    bgColor = "bg-teal-500";
-  } else if (tasks.some((selected) => selected.category === "on-progress")) {
-    bgColor = "bg-rose-500";
-  }
-
   return (
     <div className="mb-4 w-full px-2 sm:w-1/2 md:w-1/4">
       <div className={`rounded-lg ${bgColor} p-4`}>
+        {/* Header */}
         <div className="mb-2 flex items-center justify-between">
           <h3 className="text-lg font-semibold">
             {category} ({tasks.length})
           </h3>
-          <button onClick={() => onSort(tasks[0].category)}>
+          <button onClick={() => onSort(category)}>
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="18"
@@ -48,17 +46,22 @@ const TaskCard = ({ tasks, category, onSort, sortOrder, onDelete, onEdit }) => {
             </svg>
           </button>
         </div>
+
+        {/* Task List */}
         <div>
           {sortedTasks.length > 0 ? (
-            sortedTasks.map((ctg, index) => (
-              <div key={index} className="mb-4 rounded-lg bg-gray-800 p-4">
+            sortedTasks.map((task, index) => (
+              <div
+                key={task.id || index}
+                className="mb-4 rounded-lg bg-gray-800 p-4"
+              >
                 <div className="flex justify-between">
                   <h4 className="mb-2 flex-1 font-semibold text-indigo-500">
-                    {ctg.name}
+                    {task.name}
                   </h4>
 
-                  <div className="flex items-center justify-center  gap-2">
-                    <button onClick={() => onDelete(ctg.name)}>
+                  <div className="flex items-center gap-2">
+                    <button onClick={() => onDelete(task.name)}>
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
@@ -77,7 +80,7 @@ const TaskCard = ({ tasks, category, onSort, sortOrder, onDelete, onEdit }) => {
                         <path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" />
                       </svg>
                     </button>
-                    <button onClick={() => onEdit(ctg)}>
+                    <button onClick={() => onEdit(task)}>
                       <svg
                         className="h-4 w-4 cursor-pointer text-zinc-300"
                         fill="none"
@@ -93,13 +96,12 @@ const TaskCard = ({ tasks, category, onSort, sortOrder, onDelete, onEdit }) => {
                     </button>
                   </div>
                 </div>
-                <p className="mb-2 text-sm text-zinc-200">{ctg.description}</p>
-
-                <p className="mt-6 text-xs text-zinc-400"> {ctg.date}</p>
+                <p className="mb-2 text-sm text-zinc-200">{task.description}</p>
+                <p className="mt-6 text-xs text-zinc-400">{task.date}</p>
               </div>
             ))
           ) : (
-            <p> The Category : {category} is empty</p>
+            <p className="text-white">No tasks in {category}</p>
           )}
         </div>
       </div>
